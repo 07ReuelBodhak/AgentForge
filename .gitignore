@@ -1,0 +1,91 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+*.db
+*.sqlite3
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Temporary Test Evidence Artifacts (keep folder structure via .gitkeep)
+evidence/task-*/
+evidence/*.log
+evidence/*.png
+evidence/*.txt
+!evidence/README.md
+!evidence/.gitkeep
+
+# Reports Output (keep folder structure via .gitkeep)
+reports/tasks/*.md
+!reports/tasks/.gitkeep
+reports/final-report.md
+!reports/README.md
+!reports/.gitkeep
+
+# Context History Output (keep folder structure via .gitkeep)
+docs/project-context-history/*.md
+!docs/project-context-history/.gitkeep
+docs/project-context.md
+
+# Dynamic Task Files (keep schema and folder structure via .gitkeep)
+tasks/TASK-*.md
+tasks/task-*.md
+!tasks/task-schema.md
+!tasks/.gitkeep
+
+# Dynamic Changes (keep schema and folder structure via .gitkeep)
+changes/CR-*.md
+!changes/change-request-schema.md
+!changes/.gitkeep
+
+# State Overwrites
+state/tester-reasoning.txt
+state/failure-*.txt
+state/escalation.md

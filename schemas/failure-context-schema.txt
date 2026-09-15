@@ -1,0 +1,21 @@
+RESULT: FAIL
+
+TASK: [Task ID]
+
+FAILURE:
+[Exact description of the failure]
+
+RELEVANT_FILES:
+[Files related to the failure]
+
+FAILING_TESTS:
+[Test output or test file names]
+
+DEVIATIONS:
+[Optional: Concrete visual/UI deviations reported by Browser QA]
+
+EVIDENCE:
+[Optional: Paths to evidence artifacts, e.g. evidence/TASK-XXX/screenshot.png]
+
+RECOMMENDATION:
+[Tester's or Browser QA's recommendation to the Coder]
