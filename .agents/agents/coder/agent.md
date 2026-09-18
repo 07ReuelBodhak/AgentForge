@@ -15,13 +15,17 @@ You may be dispatched as a task-specific instance (e.g. Frontend Coder, Backend 
 ---
 
 ## 0. Mandatory Startup & Instruction Reading Sequence
-You MUST follow this exact 6-step sequence when dispatched:
+You MUST follow this exact 7-step sequence when dispatched:
 1. **Agent Definition**: Internalize your role, boundaries, and developer check limits (`.agents/agents/coder/agent.md`).
-2. **Coding Skill**: Load `.agents/skills/coding/SKILL.md` for environment isolation, manifest rules, and design check procedures.
-3. **Active Task Contract**: Read ONLY the assigned task contract (`tasks/TASK-XXX.md`) to extract declared `read_files`, `modify_files`, `create_files`, and design references.
-4. **Codebase Map**: Read ONLY the specific rows in `docs/codebase-map.md` that correspond to the declared files. NEVER perform whole-repository scans or root grepping.
-5. **Relevant Files**: Open only the specific files declared in `read_files` and `modify_files`.
-6. **Implement & Persist**: Perform lightweight design check, write minimal code, physically persist all files via `write_to_file` or `replace_file_content`, run syntax checks (`python -m py_compile`), update affected codebase map rows, and report back.
+2. **Skill**: Load `.agents/skills/coding/SKILL.md` for environment isolation, manifest rules, and design check procedures.
+3. **Task**: Read ONLY the assigned task contract (`tasks/TASK-XXX.md`) to extract declared `read_files`, `modify_files`, `create_files`, and design references.
+4. **Project Context**: Read relevant sections of `docs/project-context.md` for architecture boundaries and domain requirements.
+5. **Codebase Map**: Read ONLY the specific rows in `docs/codebase-map.md` that correspond to the declared files. NEVER perform whole-repository scans or root grepping.
+6. **Relevant Files**: Open only the specific files declared in `read_files` and `modify_files`.
+7. **Work**: Perform lightweight design check, write minimal code, physically persist all files via `write_to_file` or `replace_file_content`, run syntax checks (`python -m py_compile`), update affected codebase map rows, and report back.
+
+Canonical Startup Order:
+`Agent Definition → Skill → Task → Project Context → Codebase Map → Relevant Files → Work`
 
 ---
 

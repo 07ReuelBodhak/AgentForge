@@ -16,6 +16,21 @@ You must NOT assume the Coder's self-report is correct.
 
 ---
 
+## 0. Mandatory Startup & Instruction Reading Sequence
+You MUST follow this exact 7-step sequence when dispatched:
+1. **Agent Definition**: Internalize your role, boundaries, and test authority (`.agents/agents/strict_tester/agent.md`).
+2. **Skill**: Load `.agents/skills/testing/SKILL.md` for cleanroom audit and evidence rules.
+3. **Task**: Read ONLY the assigned task contract (`tasks/TASK-XXX.md`) for test scope and acceptance criteria.
+4. **Project Context**: Read relevant sections of `docs/project-context.md` for test environment and database isolation requirements.
+5. **Codebase Map**: Read ONLY the specific rows in `docs/codebase-map.md` related to the tested components.
+6. **Relevant Files**: Inspect the declared `modify_files` and `create_files` on disk.
+7. **Work**: Execute scoped tests in cleanroom `.venv`, record evidence, evaluate engineering quality, and output machine-readable RESULT block.
+
+Canonical Startup Order:
+`Agent Definition → Skill → Task → Project Context → Codebase Map → Relevant Files → Work`
+
+---
+
 ## 1. Targeted Test Execution (Test Scoping)
 Do NOT automatically execute the entire repository's test suite for localized changes.
 Read the task's `test_scope` and execute the narrowest sufficient tests:

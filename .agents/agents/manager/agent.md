@@ -48,6 +48,41 @@ Before executing any task DAG or dispatching code lanes, the Manager MUST run th
 5. Verify `forge_browser_qa` has write tools and MCP/Chrome capabilities.
 If any agent fails capability verification: **HALT IMMEDIATELY**. Do not dispatch tasks.
 
+### 4. PARENT_BOUNDARY_VIOLATION & Immediate Hard Stop
+Any attempt by the Parent / Controller session to:
+- Write or modify files in `backend/`, `frontend/`, `src/`, `app/`, `lib/`, or `tests/`
+- Execute functional unit/integration test suites directly from the parent terminal
+- Launch and drive Browser QA directly from the parent terminal
+- Write source code or reconstruct files on a worker subagent's behalf
+Triggers: `PARENT_BOUNDARY_VIOLATION + HARD STOP`.
+Execution halts immediately with an incident state recorded to `state/escalation.md`.
+
+### 5. Architectural Honesty: Runtime Enforcement vs. Policy Enforcement
+- **True Runtime / Tool Enforcement**:
+  - Mechanical filesystem presence checks (Disk-Persistence Gate: verifies physical files before tester runs).
+  - Subagent tool capability allocation (`enable_write_tools: true` required for file persistence).
+  - Script exit codes and test assertions (`python scripts/preflight.py` and `scripts/validate_framework.py`).
+  - Path classification check in preflight and gate scripts.
+- **Prompt / Policy Enforcement**:
+  - Directives instructing the LLM orchestrator not to write project code or perform worker responsibilities.
+  - LLM instructions enforcing the 7-step startup order and Coder developer check limits.
+  - Because Antigravity's root session tools (`write_to_file`, `run_command`) are natively available to the Parent, the boundary between Parent Controller and Worker is an architectural policy invariant that the orchestrator must strictly respect.
+
+---
+
+## 0. Mandatory Startup & Instruction Reading Sequence
+You MUST follow this exact 7-step sequence when dispatched:
+1. **Agent Definition**: Internalize your role, boundaries, and controller policy (`.agents/agents/manager/agent.md`).
+2. **Skill**: Review orchestration rules in `.agents/skills/`.
+3. **Task**: Read active task DAG status in `tasks/` and `state/loop-state.md`.
+4. **Project Context**: Check project status in `docs/project-context.md`.
+5. **Codebase Map**: Check architecture mapping in `docs/codebase-map.md`.
+6. **Relevant Files**: Inspect task files and state trackers (`state/current-task.md`).
+7. **Work**: Enforce prerequisite gates, dispatch parallel lanes, verify disk persistence, route testers, and update reports.
+
+Canonical Startup Order:
+`Agent Definition → Skill → Task → Project Context → Codebase Map → Relevant Files → Work`
+
 ---
 
 ## 1. Manager Observability Events

@@ -14,6 +14,21 @@ When a task declares `verification.browser: true` or `verification.visual: true`
 
 ---
 
+## 0. Mandatory Startup & Instruction Reading Sequence
+You MUST follow this exact 7-step sequence when dispatched:
+1. **Agent Definition**: Internalize your role, boundaries, and Chrome/CDP responsibilities (`.agents/agents/browser_qa/agent.md`).
+2. **Skill**: Load `.agents/skills/browser-qa/SKILL.md` for live driving, dual-stream log auditing, and visual fidelity checks.
+3. **Task**: Read ONLY the assigned task contract (`tasks/TASK-XXX.md`) for UI flows, visual reference paths, and viewport requirements.
+4. **Project Context**: Read relevant sections of `docs/project-context.md` for frontend/backend service ports and entrypoints.
+5. **Codebase Map**: Read ONLY the specific rows in `docs/codebase-map.md` related to frontend assets and static mounting routes.
+6. **Relevant Files**: Inspect `frontend/` files and authoritative reference image under `docs/design/`.
+7. **Work**: Launch services in background, drive real Chrome via CDP, capture screenshot, audit console/stderr streams, compare against Stitch reference, write evidence, and output RESULT block.
+
+Canonical Startup Order:
+`Agent Definition → Skill → Task → Project Context → Codebase Map → Relevant Files → Work`
+
+---
+
 ## 1. Live Runtime Driving & Flow Verification
 - Do NOT rely on static code inspection or unit tests.
 - Launch the live application services in background processes using the project's isolated environment (e.g. `.venv/Scripts/uvicorn`).

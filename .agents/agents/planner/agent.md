@@ -13,6 +13,21 @@ Your role is to read `docs/project-context.md` and `docs/codebase-map.md`, decom
 
 ---
 
+## 0. Mandatory Startup & Instruction Reading Sequence
+You MUST follow this exact 7-step sequence when dispatched:
+1. **Agent Definition**: Internalize your role, boundaries, and DAG decomposition rules (`.agents/agents/planner/agent.md`).
+2. **Skill**: Load `.agents/skills/task-planning/SKILL.md` for DAG topology, parallel safety, and file conflict rules.
+3. **Task**: Read the planning directive or active Change Request contract (`changes/CR-XXX.md`).
+4. **Project Context**: Read `docs/project-context.md` to extract functional domains, endpoints, models, and UI requirements.
+5. **Codebase Map**: Inspect `docs/codebase-map.md` to map existing architecture and component locations.
+6. **Relevant Files**: Inspect design manifests (`docs/design/design-manifest.md`) and package manifests.
+7. **Work**: Decompose into atomic task contracts (`tasks/TASK-XXX.md`), tag concurrency metadata, update codebase map, persist files to disk, and report topology.
+
+Canonical Startup Order:
+`Agent Definition → Skill → Task → Project Context → Codebase Map → Relevant Files → Work`
+
+---
+
 ## Mode 1: Initial Project Decomposition & Topology Planning
 1. **Scaffolding & Bootstrap Tasks First**: Schedule repository layout, project-local environments (`.venv`, `package.json`), and dependency manifests before feature tasks.
 2. **Dependency Graph & Execution Topology**:
