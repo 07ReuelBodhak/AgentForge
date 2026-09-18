@@ -86,43 +86,58 @@ Following forensic audit `INC-001` ([reports/incidents/INC-001-parent-takeover.m
 - The Manager / Parent Antigravity Session **MUST NEVER** take over implementation, write application code, run tests in the root shell, or perform Browser QA directly.
 - Orchestrator takeovers are formally classified as SEV-1 architecture violations that invalidate the run.
 
-### 2. Parent Action Classification Gate
-To mechanically prevent controller takeover, directory access is partitioned:
+### 2. Mechanical Parent Boundary Hook (`.agents/hooks.json`)
+To mechanically prevent controller takeover, AgentForge installs a native `PreToolUse` lifecycle hook (`scripts/hook_parent_boundary.py` via `.agents/hooks.json`):
 * **FORBIDDEN PATHS for Controller / Parent Session**:
   `backend/**`, `frontend/**`, `src/**`, `app/**`, `lib/**`, `tests/**` (all application source and test trees).
-  The Parent Session is mechanically prohibited from calling `write_to_file` or `replace_file_content` on ANY file in these directories.
+  If the Parent Session attempts to call `write_to_file` or `replace_file_content` on ANY file in these directories, the hook intercepts the call before execution and returns `{"decision": "deny"}` with `PARENT_BOUNDARY_VIOLATION + HARD STOP`.
 * **ALLOWED PATHS for Controller / Parent Session**:
   `state/**`, `tasks/**`, `reports/**`, `docs/**`, `scripts/**` (orchestration, task tracking, and telemetry artifacts only).
 
 ### 3. Native Antigravity Subagent Tool Enablement
-Subagents must be registered with explicit capabilities (`enable_write_tools: true`, `enable_mcp_tools: true`, `enable_subagent_tools: true`):
-* Subagents equipped with write tools write physical files directly to disk via `write_to_file` and `replace_file_content`.
-* Subagents with subagent tools (`forge_manager`) natively spawn and monitor child worker subagents (`forge_coder`, `forge_strict_tester`), a capability empirically tested and verified in V2.4.
+Subagents must be registered with explicit capabilities (`enable_write_tools: true`, `enable_mcp_tools: true`):
+* Worker subagents equipped with write tools write physical files directly to disk via `write_to_file` and `replace_file_content`.
+* The Parent Orchestrator monitors disk persistence before dispatching verification.
 
 ### 4. Mandatory Preflight Verification
 Run `python scripts/preflight.py` before any project execution to verify:
 * Required framework directories exist.
-* All 6 agent definitions declare required write/MCP capabilities.
+* All worker agent definitions declare required write/MCP capabilities.
 * The Parent Action Classification Gate correctly blocks unauthorized paths.
 
 ---
 
-## 🤖 Which Agent Runs When?
+## 🤖 The Real Runtime Architecture: 5-Worker Roster Orchestrated by Parent
 
-AgentForge separates responsibilities across **6 specialized native subagents**. Each agent operates under strict model-tier and permission policies:
+In the AgentForge runtime architecture:
+**PARENT ANTIGRAVITY SESSION = MANAGER / ORCHESTRATOR**
+
+There is **no separate Manager subagent** running the normal control loop. The user talks directly to the Parent Antigravity Session, which acts as the thin deterministic coordinator, dispatching **5 specialized worker subagents**:
+
+```text
+User / Product Owner
+       │
+       ▼
+Parent Antigravity Session (Manager / Orchestrator)
+       │
+       ├─► 1. context_extractor (Flash) - Spec & Context Extraction
+       ├─► 2. planner (Pro)            - Topology, Task Contracts & Codebase Map
+       ├─► 3. coder (Flash)              - Surgical Code Implementation & Dev Checks
+       ├─► 4. strict_tester (Flash)     - Cleanroom Unit & Integration Verification
+       └─► 5. browser_qa (Flash)        - Chrome CDP Driving & Stitch Visual Auditing
+```
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────┐
-│                             THE 6-AGENT DIRECTORY                                │
+│                             THE 5-WORKER ROSTER                                  │
 ├─────────────────────────┬──────────────┬───────────────┬─────────────────────────┤
-│ Agent Name              │ Model Tier   │ Primary Phase │ Execution Trigger       │
+│ Worker Agent Name       │ Model Tier   │ Primary Phase │ Execution Trigger       │
 ├─────────────────────────┼──────────────┼───────────────┼─────────────────────────┤
 │ 1. context_extractor    │ Flash        │ Discovery     │ Project Bootstrap       │
 │ 2. planner              │ Pro          │ Planning / CR │ Post-Context Extraction │
-│ 3. manager              │ Inherit      │ Orchestration │ Full Execution Loop     │
-│ 4. coder                │ Flash        │ Coding Waves  │ Task Assigned / Retry   │
-│ 5. strict_tester        │ Flash        │ Verification  │ Post-Coding Handoff     │
-│ 6. browser_qa           │ Flash        │ UI Audit      │ Post-Tester UI Handoff  │
+│ 3. coder                │ Flash        │ Coding Waves  │ Task Assigned / Retry   │
+│ 4. strict_tester        │ Flash        │ Verification  │ Post-Coding Handoff     │
+│ 5. browser_qa           │ Flash        │ UI Audit      │ Post-Tester UI Handoff  │
 └─────────────────────────┴──────────────┴───────────────┴─────────────────────────┘
 ```
 

@@ -1,0 +1,16 @@
+{
+  "parent-boundary-gate": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/hook_parent_boundary.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
