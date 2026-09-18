@@ -74,6 +74,16 @@
   - **Activity**: 
   - **Target Agent**: 
 
+# Design Source of Truth (Stitch / Visual Assets)
+<!-- Authoritative design specification source. Never replace with AI-generated interpretations. -->
+- **Design Source**: [Stitch | Human-Provided Assets | None]
+- **Stitch Project ID**: [Stitch Project ID if available via MCP, or None]
+- **Stitch Project URL / Identifier**: [e.g. projects/... or URL, or UNKNOWN]
+- **Authoritative Assets Path**: docs/design/
+- **Design Manifest**: docs/design/design-manifest.md
+- **Required Screens & States**:
+  - [Screen Name]: [State: default | empty | loading | etc., expected reference path in docs/design/]
+
 # Testing Strategy
 - **Unit Testing**: 
 - **Integration Testing**: 

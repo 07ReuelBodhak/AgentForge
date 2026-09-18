@@ -3,9 +3,7 @@
 - **Session Type**: INITIAL_BUILD
 - **Change Request**: None
 - **Execution Mode**: PENDING_USER_CHOICE
-- **Task ID**: None
-- **State**: IDLE
-- **Iteration**: 0
+- **Active Lanes**:
+  - **LANE_DEFAULT**: None (Status: IDLE)
 - **Max Iterations**: 3
-- **Last Verification Result**: None
-- **Active Failure Context**: None
+- **Active Failure Contexts**: None

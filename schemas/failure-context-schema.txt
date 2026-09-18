@@ -2,20 +2,28 @@ RESULT: FAIL
 
 TASK: [Task ID]
 
-FAILURE:
-[Exact description of the failure]
+FAILED GATE: [UNIT | INTEGRATION | BROWSER | VISUAL | CODER_OUTPUT]
+
+REFERENCE:
+[Optional: Authoritative visual reference path e.g. docs/design/home/home.png, or 'None']
+
+IMPLEMENTATION:
+[Optional: Running app browser screenshot path e.g. evidence/TASK-XXX/browser-screenshot.png, or 'None']
+
+PROBLEM:
+[Exact description of the failure, error traceback, or visual deviation]
 
 RELEVANT_FILES:
 [Files related to the failure]
 
-FAILING_TESTS:
-[Test output or test file names]
+FAILING_TESTS_OR_FLOWS:
+[Test output, failing assertion, or failing interaction route]
 
 DEVIATIONS:
 [Optional: Concrete visual/UI deviations reported by Browser QA]
 
 EVIDENCE:
-[Optional: Paths to evidence artifacts, e.g. evidence/TASK-XXX/screenshot.png]
+[File paths to evidence artifacts, e.g. evidence/TASK-XXX/browser-screenshot.png, evidence/TASK-XXX/visual-comparison.md]
 
 RECOMMENDATION:
-[Tester's or Browser QA's recommendation to the Coder]
+[Tester's or Browser QA's minimal actionable recommendation to the Coder]

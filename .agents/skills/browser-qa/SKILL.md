@@ -1,58 +1,78 @@
 ---
 name: browser-qa
-description: Operational guidelines for Browser QA on independent live Chrome automation, dual-stream log auditing, and visual fidelity checks.
+description: Operational guidelines for Browser QA on real runtime Chrome driving, dual-stream log auditing, and visual fidelity checks against authoritative references.
 ---
 
 # Browser QA Guidelines
 
 As the Browser QA agent, your role is independent end-to-end and visual verification of applications that provide a runnable web interface (Browser Web UI and Flutter Web).
 
-## 1. Supported Platform Scope
-- **Supported**: Browser Web UI (HTML/JS, React, Vue, Next.js) and Flutter Web running in Google Chrome.
-- **Unsupported**: Native Android/iOS mobile apps and native desktop GUI applications. *(See `references/platform-and-stitch.md` for full matrix).*
+## 1. Real Runtime Driving & Flow Verification
+- Do not rely on static analysis. Launch services using project-local environments (`.venv`).
+- Control Google Chrome via Playwright CDP (`channel="chrome"`).
+- Verify complete user flows: `User Interaction → Frontend Logic → API Call → Backend Service → DB / External Service → Response → UI State Mutation`.
+- Confirm inputs type, buttons click, views transition, alerts display, and session states update properly.
 
-## 2. Live Chrome Automation & Dual-Stream Auditing
-- **Real Chrome Execution**: Launch backend services in the project environment, then control Google Chrome via Playwright (`p.chromium.launch(channel="chrome")`). Execute user journeys: fill inputs, click buttons, toggle states, and submit forms.
-- **Dual-Stream Error Auditing**:
-  1. **Browser Stream**: Attach listeners to Chrome console (`page.on("console")`, `page.on("pageerror")`). Any unhandled JavaScript error, Promise rejection, or Flutter assertion failure must immediately fail verification.
-  2. **Process Stream**: Tail live server `stdout` and `stderr`. Any crash, traceback, unhandled exception, or HTTP 500 must immediately fail verification.
-- **Concrete Deviations**: Report only objective defects (missing elements, layout misalignment, spacing/font deviations from Stitch tokens, broken HTTP responses, console errors). No subjective remarks.
+## 2. Dual-Stream Error Auditing
+- **Browser Stream**: Intercept `pageerror` and `console.error`. Any unhandled JavaScript error or framework assertion failure triggers instant verification failure.
+- **Process Stream**: Monitor backend server `stdout`/`stderr`. Any unhandled exception or HTTP 500 triggers instant verification failure.
 
-## 3. Evidence Collection
-Save audit artifacts under `evidence/<task-id>/`:
-- `browser_screenshots/`: High-resolution PNG captures of key user flow states.
-- `chrome-console.log`: Intercepted console logs and errors.
-- `api-verification.log`: Live network traces.
-- Zero secrets, credentials, or real passwords may be logged in evidence.
+## 3. Authoritative Visual Reference Verification
+- When `verification.visual: true`, inspect declared authoritative reference under `docs/design/` (e.g. `docs/design/home/home.png`).
+- If the visual reference file is missing: Output `RESULT: BLOCKED` with `Missing authoritative Stitch design reference file: <path>. Human action required.`
+- **Design Extension Verification (`preserve_existing_design_language: true`)**: When verifying a new screen styled after existing Stitch screens, compare live screenshot against `existing_design_references` to verify design consistency (colors, typography, cards, button shapes, navigation).
+- Capture actual running screenshot to `evidence/<task-id>/browser-screenshot.png`.
+- Compare live screenshot against authoritative reference for composition, layout grid, element spacing, typography, and colors.
+- Document comparisons in `evidence/<task-id>/visual-comparison.md`. Never accept "looks reasonable" without concrete comparison.
 
-## 4. Machine-Readable Result Contract
-1. Write reasoning to `state/tester-reasoning.txt` FIRST.
-2. Return ONLY the strict output block:
+## 4. Platform Scope
+- **Supported**: Browser Web UI and Flutter Web in Google Chrome.
+- **Unsupported**: Native Android/iOS mobile apps and desktop GUI applications.
+
+## 5. Machine-Readable Result Contract
+Write reasoning to `state/tester-reasoning.txt` FIRST.
+Then output ONLY the strict schema below:
 
 If all checks pass:
 ```text
 RESULT: PASS
+FLOWS_VERIFIED:
+- [List of verified flows]
+VISUAL_COMPARISON:
+- Reference: [Path to docs/design/... reference]
+- Implementation: evidence/<task-id>/browser-screenshot.png
+- State Verified: [default | empty | loading]
+- Viewport: [mobile | desktop]
+- Match: PASS
+- Observed Differences: None
 EVIDENCE:
-- evidence/<task-id>/...
+- evidence/<task-id>/browser-screenshot.png
+- evidence/<task-id>/visual-comparison.md
+- evidence/<task-id>/chrome-console.log
 ```
 
 If ANY check fails:
 ```text
 RESULT: FAIL
-FAILURE:
+FAILED_GATE: [VISUAL | BROWSER_FLOW | RUNTIME_ERROR]
+REFERENCE: [Path to docs/design/... reference or 'None']
+IMPLEMENTATION: evidence/<task-id>/browser-screenshot.png
+PROBLEM:
 [Exact evidence-based description of failure]
 
 RELEVANT_FILES:
 - [file1]
 
-FAILING_TESTS:
-- [Failing check]
+FAILING_FLOWS:
+- [Failing interaction or route]
 
 DEVIATIONS:
-- [Concrete deviation 1]
+- [Concrete visual deviation 1]
 
 EVIDENCE:
-- evidence/<task-id>/...
+- evidence/<task-id>/browser-screenshot.png
+- evidence/<task-id>/visual-comparison.md
+- evidence/<task-id>/chrome-console.log
 
 RECOMMENDATION:
 [Minimal actionable recommendation for Coder]
