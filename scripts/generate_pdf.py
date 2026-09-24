@@ -7,8 +7,8 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 
-md_path = Path('reports/v2.4-final-role-boundary-audit.md')
-pdf_path = Path('reports/v2.4-final-role-boundary-audit.pdf')
+md_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path('reports/v2.4-final-role-boundary-audit.md')
+pdf_path = Path(sys.argv[2]) if len(sys.argv) > 2 else Path('reports/v2.4-final-role-boundary-audit.pdf')
 
 doc = SimpleDocTemplate(str(pdf_path), pagesize=letter, rightMargin=36, leftMargin=36, topMargin=36, bottomMargin=36)
 styles = getSampleStyleSheet()
@@ -28,11 +28,18 @@ def sanitize(text):
     return text
 
 story = []
-story.append(Paragraph('AgentForge V2.4 — Final Role Boundary & Architecture Audit', title_style))
-story.append(Paragraph('<b>Date:</b> 2026-09-19 | <b>Status:</b> FULLY HARDENED &amp; AUDITED (8 / 8 Checks Passed) | <b>Repo:</b> AgentForge', body_style))
+lines = md_path.read_text(encoding='utf-8').splitlines()
+doc_title = 'AgentForge V2.4 Audit Report'
+for l in lines:
+    if l.startswith('# '):
+        doc_title = sanitize(l[2:])
+        break
+
+story.append(Paragraph(doc_title, title_style))
+story.append(Paragraph('<b>Architecture:</b> AgentForge V2.4 Hardened | <b>Status:</b> FULLY HARDENED &amp; VERIFIED | <b>Repo:</b> AgentForge', body_style))
 story.append(Spacer(1, 8))
 
-for line in md_path.read_text(encoding='utf-8').splitlines():
+for line in lines:
     line = line.strip()
     if not line or line.startswith('---'):
         continue
